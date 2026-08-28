@@ -8,7 +8,7 @@ spring:
       chat:
         enabled: true
         options:
-          model: ${OLLAMA_CHAT_MODEL:qwen2.5:1.5b}
+          model: ${OLLAMA_CHAT_MODEL:qwen2.5-coder:7b}
           temperature: 0.3
       embedding:
         enabled: true
