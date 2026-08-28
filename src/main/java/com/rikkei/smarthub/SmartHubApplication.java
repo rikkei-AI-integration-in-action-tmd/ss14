@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SmartHubApplication {
 
     public static void main(String[] args) {
-        // Load local .env file into System properties if present
+
         try {
             Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
             dotenv.entries().forEach(entry -> {
@@ -21,7 +21,7 @@ public class SmartHubApplication {
         }
 
         SpringApplication app = new SpringApplication(SmartHubApplication.class);
-        // Disable Spring Boot banner to ensure zero Stdio Pollution for MCP JSON-RPC
+
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
     }

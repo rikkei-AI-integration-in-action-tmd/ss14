@@ -36,7 +36,6 @@ public class SafeSqlValidator {
         String trimmedSql = sql.trim();
         String upperSql = trimmedSql.toUpperCase(Locale.ROOT);
 
-        // 1. Phải bắt đầu bằng SELECT
         if (!upperSql.startsWith("SELECT") && !upperSql.startsWith("WITH")) {
             return SafeSqlValidationResult.builder()
                     .valid(false)
@@ -45,7 +44,6 @@ public class SafeSqlValidator {
                     .build();
         }
 
-        // 2. Kiểm tra nhiều câu lệnh (phân tách bởi dấu chấm phẩy)
         if (MULTI_STATEMENT_PATTERN.matcher(trimmedSql).find()) {
             return SafeSqlValidationResult.builder()
                     .valid(false)
@@ -54,7 +52,6 @@ public class SafeSqlValidator {
                     .build();
         }
 
-        // 3. Kiểm tra từ khóa phá hoại / thay đổi dữ liệu
         for (String keyword : FORBIDDEN_KEYWORDS) {
             String wordBoundaryRegex = "\\b" + Pattern.quote(keyword) + "\\b";
             if (Pattern.compile(wordBoundaryRegex, Pattern.CASE_INSENSITIVE).matcher(trimmedSql).find()) {
@@ -67,7 +64,6 @@ public class SafeSqlValidator {
             }
         }
 
-        // 4. Ép LIMIT tối đa 100
         String sanitizedSql = trimmedSql.replaceAll(";\\s*$", "");
         var matcher = LIMIT_PATTERN.matcher(sanitizedSql);
         if (matcher.find()) {

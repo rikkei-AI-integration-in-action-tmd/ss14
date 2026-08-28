@@ -1,4 +1,3 @@
--- Sample data for deliveries
 INSERT INTO deliveries (tracking_code, customer_name, hub_code, status, cod_amount, created_at)
 VALUES
     ('RK-2026-001', 'Nguyen Van A', 'HN-01', 'IN_TRANSIT', 150000.00, CURRENT_TIMESTAMP - INTERVAL '2 days'),
@@ -7,8 +6,6 @@ VALUES
     ('RK-2026-004', 'Pham Minh D', 'HN-01', 'DAMAGED', 500000.00, CURRENT_TIMESTAMP - INTERVAL '1 days'),
     ('RK-2026-005', 'Hoang Quoc E', 'SG-02', 'IN_TRANSIT', 200000.00, CURRENT_TIMESTAMP)
 ON CONFLICT (tracking_code) DO NOTHING;
-
--- Sample data for incidents
 INSERT INTO incidents (tracking_code, incident_type, hub_code, severity, description, status, created_at)
 VALUES
     ('RK-2026-004', 'HỎNG_HÓC', 'HN-01', 'CRITICAL', 'Hàng bị va đập vỡ hộp carton trong quá trình bốc xếp tại kho Hà Nội', 'OPEN', CURRENT_TIMESTAMP - INTERVAL '1 days'),

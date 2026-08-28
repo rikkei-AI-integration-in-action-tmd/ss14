@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.rikkei.smarthub.repository")
 public class DatabaseConfig {
-    // Standard Spring Boot DataSource is auto-configured with HikariCP via application.yml
+
 }

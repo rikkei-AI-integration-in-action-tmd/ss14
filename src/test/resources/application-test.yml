@@ -15,15 +15,12 @@ spring:
   sql:
     init:
       mode: never
-
   ai:
     vectorstore:
       pgvector:
         initialize-schema: false
-
 server:
   port: 0
-
 management:
   tracing:
     sampling:

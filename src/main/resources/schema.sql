@@ -1,8 +1,5 @@
--- Enable Vector Extension if available
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- Table: deliveries (SRS 4.1)
 CREATE TABLE IF NOT EXISTS deliveries (
     id BIGSERIAL PRIMARY KEY,
     tracking_code VARCHAR(50) UNIQUE NOT NULL,
@@ -12,12 +9,9 @@ CREATE TABLE IF NOT EXISTS deliveries (
     cod_amount DECIMAL(12,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 CREATE INDEX IF NOT EXISTS idx_deliveries_tracking_code ON deliveries(tracking_code);
 CREATE INDEX IF NOT EXISTS idx_deliveries_hub_code ON deliveries(hub_code);
 CREATE INDEX IF NOT EXISTS idx_deliveries_status ON deliveries(status);
-
--- Table: incidents (SRS 4.2)
 CREATE TABLE IF NOT EXISTS incidents (
     id BIGSERIAL PRIMARY KEY,
     tracking_code VARCHAR(50) NOT NULL,
@@ -28,17 +22,13 @@ CREATE TABLE IF NOT EXISTS incidents (
     status VARCHAR(30) DEFAULT 'OPEN',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 CREATE INDEX IF NOT EXISTS idx_incidents_tracking_code ON incidents(tracking_code);
 CREATE INDEX IF NOT EXISTS idx_incidents_hub_code ON incidents(hub_code);
 CREATE INDEX IF NOT EXISTS idx_incidents_status ON incidents(status);
-
--- Table: vector_store (SRS 4.3)
 CREATE TABLE IF NOT EXISTS vector_store (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     content TEXT NOT NULL,
     metadata JSONB DEFAULT '{}',
     embedding vector(1536)
 );
-
 CREATE INDEX IF NOT EXISTS idx_vector_store_embedding ON vector_store USING hnsw (embedding vector_cosine_ops);
