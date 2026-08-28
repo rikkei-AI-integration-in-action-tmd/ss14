@@ -1,0 +1,20 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.autoconfigure.ollama.OllamaAutoConfiguration
+  ai:
+    openai:
+      base-url: ${OPENAI_BASE_URL:https://openrouter.ai/api}
+      api-key: ${OPENAI_API_KEY:your-openai-or-openrouter-api-key}
+      chat:
+        enabled: true
+        options:
+          model: ${OPENAI_CHAT_MODEL:openai/gpt-4o-mini}
+          temperature: 0.3
+      embedding:
+        enabled: true
+        options:
+          model: ${OPENAI_EMBEDDING_MODEL:openai/text-embedding-3-small}
+    vectorstore:
+      pgvector:
+        dimensions: 1536

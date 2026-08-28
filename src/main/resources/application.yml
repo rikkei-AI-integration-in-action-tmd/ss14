@@ -1,0 +1,104 @@
+spring:
+  application:
+    name: smarthub
+  main:
+    banner-mode: "off"
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:cloud}
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      continue-on-error: true
+
+  ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        distance-type: COSINE_DISTANCE
+        index-type: HNSW
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+management:
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      endpoint: ${LANGFUSE_HOST:https://cloud.langfuse.com}/api/public/otel/v1/traces
+      headers:
+        Authorization: "Basic ${LANGFUSE_BASIC_AUTH:}"
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,tracing
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  pattern:
+    level: "%5p [traceId=%X{traceId} spanId=%X{spanId}]"
+  level:
+    root: INFO
+    com.rikkei.smarthub: DEBUG
+    org.springframework.ai: INFO
+    io.opentelemetry: WARN
+    org.hibernate.SQL: WARN
+
+smarthub:
+  ai:
+    max-iterations: 6
+    similarity-threshold: 0.7
+    chunk-size: 500
+    chunk-overlap: 50
+    default-system-prompt: |
+      Bạn là SmartHub AI - Trợ lý Trung tâm Điều hành và Hỗ trợ Vận tải Thông minh của RikkeiExpress.
+      Nhiệm vụ của bạn là hỗ trợ tra cứu chính sách, giải quyết khiếu nại sự cố và phân tích đối soát vận hành.
+      Quy tắc bắt buộc:
+      1. Khi tra cứu tài liệu, bắt buộc trích dẫn nguồn (tên tài liệu, số điều/khoản).
+      2. Nếu không tìm thấy thông tin trong tài liệu quy chế, phải lịch sự thông báo "Tôi không tìm thấy thông tin này trong tài liệu quy chế của RikkeiExpress." Tuyệt đối không bịa đặt (Anti-Hallucination).
+      3. Khi phát hiện sự cố (HỎNG_HÓC, GIAO_TRỄ, THẤT_LẠC), tự động bóc tách thông tin và gọi công cụ tạo phiếu sự cố và cập nhật trạng thái đơn hàng.
+  mcp:
+    server-command: ${MCP_SERVER_COMMAND:npx}
+    server-args: ${MCP_SERVER_ARGS:-y,@modelcontextprotocol/server-postgres}
+    database-url: ${MCP_DATABASE_URL:postgresql://postgres:postgres@localhost:5432/postgres}
+    safe-sql:
+      max-limit: 100
+      enforce-read-only: true
+
+langfuse:
+  host: ${LANGFUSE_HOST:https://cloud.langfuse.com}
+  public-key: ${LANGFUSE_PUBLIC_KEY:}
+  secret-key: ${LANGFUSE_SECRET_KEY:}
+  basic-auth: ${LANGFUSE_BASIC_AUTH:}
